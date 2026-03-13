@@ -13,7 +13,7 @@ build==1.2.2.post1
 cachetools==5.5.1
 certifi==2024.12.14
 charset-normalizer==3.4.1
-chroma-hnswlib==0.7.6 # コメントアウトする場合：chromadb を 0.5 系に落としても hnswlib 側だけ 0.6 系前提の組み合わせが残ると、別の依存衝突や起動不良を作りやすい
+#chroma-hnswlib==0.7.6 # コメントアウトする場合：chromadb を 0.5 系に落としても hnswlib 側だけ 0.6 系前提の組み合わせが残ると、別の依存衝突や起動不良を作りやすい
 #chromadb==0.6.3
 chromadb==0.5.23 # 0.6.3でエラーが発生するため、0.5.23にダウングレード
 click==8.1.8
