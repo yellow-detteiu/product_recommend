@@ -32,7 +32,7 @@ logger = logging.getLogger(ct.LOGGER_NAME)
 try:
     initialize()
 except Exception as e:
-    logger.error(f"{ct.INITIALIZE_ERROR_MESSAGE}\n{e}", exc_info=True)
+    logger.error(f"{ct.INITIALIZE_ERROR_MESSAGE}\n{e}")
     st.error(utils.build_error_message(ct.INITIALIZE_ERROR_MESSAGE))
     # 例外の詳細情報を画面表示
     with st.expander("エラー詳細を表示", expanded=False):
