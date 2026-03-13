@@ -34,6 +34,9 @@ try:
 except Exception as e:
     logger.error(f"{ct.INITIALIZE_ERROR_MESSAGE}\n{e}", exc_info=True)
     st.error(utils.build_error_message(ct.INITIALIZE_ERROR_MESSAGE))
+    # 例外の詳細情報を画面表示
+    with st.expander("エラー詳細を表示", expanded=False):
+        st.exception(e)
     st.stop()
 
 # アプリ起動時のログ出力
