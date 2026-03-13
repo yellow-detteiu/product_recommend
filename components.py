@@ -6,7 +6,6 @@
 # ライブラリの読み込み
 ############################################################
 import logging
-from pathlib import Path
 import streamlit as st
 import constants as ct
 
@@ -58,8 +57,11 @@ def display_product(result):
     """
     logger = logging.getLogger(ct.LOGGER_NAME)
 
-    product = build_product_dict(result)
-    image_path = Path(__file__).resolve().parent / "images" / "products" / product["file_name"]
+    st.markdown(result)
+
+    # LLMレスポンスのテキストを辞書に変換
+    product_lines = result[0].page_content.split("\n")
+    product = {item.split(": ")[0]: item.split(": ")[1] for item in product_lines}
 
     st.markdown("以下の商品をご提案いたします。")
 
@@ -77,10 +79,7 @@ def display_product(result):
     """, language=None, wrap_lines=True)
 
     # 商品画像
-    if image_path.exists():
-        st.image(str(image_path), width=400)
-    else:
-        logger.warning(f"商品画像が見つかりません: {image_path}")
+    st.image(f"images/products/{product['file_name']}", width=400)
 
     # 商品説明
     st.code(product['description'], language=None, wrap_lines=True)
@@ -91,53 +90,3 @@ def display_product(result):
 
     # 商品ページのリンク
     st.link_button("商品ページを開く", type="primary", use_container_width=True, url="https://google.com")
-
-
-def build_product_dict(result):
-    """
-    Retrieverの戻り値から商品情報の辞書を作成
-
-    Args:
-        result: Retrieverの戻り値
-
-    Returns:
-        商品情報の辞書
-    """
-    logger = logging.getLogger(ct.LOGGER_NAME)
-
-    if not result:
-        raise ValueError("商品候補が取得できませんでした。")
-
-    document = result[0] if isinstance(result, list) else result
-    page_content = getattr(document, "page_content", None)
-
-    if not page_content:
-        raise ValueError("商品データの本文が取得できませんでした。")
-
-    product = {}
-    for line in page_content.splitlines():
-        if ": " not in line:
-            continue
-
-        key, value = line.split(": ", 1)
-        product[key] = value
-
-    required_keys = {
-        "id",
-        "name",
-        "category",
-        "price",
-        "maker",
-        "recommended_people",
-        "review_number",
-        "score",
-        "file_name",
-        "description",
-    }
-    missing_keys = required_keys - product.keys()
-
-    if missing_keys:
-        logger.error(f"商品データの解析に失敗しました。不足項目: {sorted(missing_keys)}")
-        raise ValueError("商品データの形式が想定と異なります。")
-
-    return product
