@@ -57,7 +57,7 @@ def display_product(result):
     """
     logger = logging.getLogger(ct.LOGGER_NAME)
 
-    st.markdown(result)
+    st.markdown(result) # デバッグ用
 
     # LLMレスポンスのテキストを辞書に変換
     product_lines = result[0].page_content.split("\n")
