@@ -7,6 +7,7 @@
 ############################################################
 from dotenv import load_dotenv
 import logging
+import traceback
 import streamlit as st
 import utils
 from initialize import initialize
@@ -26,17 +27,22 @@ load_dotenv()
 logger = logging.getLogger(ct.LOGGER_NAME)
 
 
+def show_exception_details(e: Exception) -> None:
+    # st.exception が表示されない環境でも traceback 文字列を表示して原因追跡できるようにする
+    with st.expander("エラー詳細を表示", expanded=True):
+        st.exception(e)
+        st.code(traceback.format_exc(), language="text")
+
+
 ############################################################
 # 初期化処理
 ############################################################
 try:
     initialize()
 except Exception as e:
-    logger.error(f"{ct.INITIALIZE_ERROR_MESSAGE}\n{e}")
+    logger.error(ct.INITIALIZE_ERROR_MESSAGE, exc_info=True)
     st.error(utils.build_error_message(ct.INITIALIZE_ERROR_MESSAGE))
-    # 例外の詳細情報を画面表示
-    with st.expander("エラー詳細を表示", expanded=False):
-        st.exception(e)
+    show_exception_details(e)
     st.stop()
 
 # アプリ起動時のログ出力
@@ -61,8 +67,9 @@ cn.display_initial_ai_message()
 try:
     cn.display_conversation_log()
 except Exception as e:
-    logger.error(f"{ct.CONVERSATION_LOG_ERROR_MESSAGE}\n{e}")
+    logger.error(ct.CONVERSATION_LOG_ERROR_MESSAGE, exc_info=True)
     st.error(utils.build_error_message(ct.CONVERSATION_LOG_ERROR_MESSAGE))
+    show_exception_details(e)
     st.stop()
 
 
@@ -92,8 +99,9 @@ if chat_message:
         try:
             result = st.session_state.retriever.invoke(chat_message)
         except Exception as e:
-            logger.error(f"{ct.RECOMMEND_ERROR_MESSAGE}\n{e}")
+            logger.error(ct.RECOMMEND_ERROR_MESSAGE, exc_info=True)
             st.error(utils.build_error_message(ct.RECOMMEND_ERROR_MESSAGE))
+            show_exception_details(e)
             st.stop()
     
     # ==========================================
@@ -105,13 +113,9 @@ if chat_message:
             
             logger.info({"message": result})
         except Exception as e:
-            logger.error(f"{ct.LLM_RESPONSE_DISP_ERROR_MESSAGE}\n{e}")
+            logger.error(ct.LLM_RESPONSE_DISP_ERROR_MESSAGE, exc_info=True)
             st.error(utils.build_error_message(ct.LLM_RESPONSE_DISP_ERROR_MESSAGE))
-
-            # 例外の詳細情報を画面表示（必要時だけ開ける）
-            with st.expander("エラー詳細を表示", expanded=False):
-                st.exception(e)
-
+            show_exception_details(e)
             st.stop()
 
     # ==========================================
