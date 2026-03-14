@@ -16,6 +16,10 @@ import streamlit as st
 from langchain_community.document_loaders.csv_loader import CSVLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
+
+import chromadb
+from langchain_chroma import Chroma   # ← 変更
+
 from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 import utils
@@ -111,7 +115,21 @@ def initialize_retriever():
     embeddings = OpenAIEmbeddings()
     db = Chroma.from_documents(docs, embedding=embeddings)
 
-    retriever = db.as_retriever(search_kwargs={"k": ct.TOP_K})
+    #retriever = db.as_retriever(search_kwargs={"k": ct.TOP_K})
+
+    """
+    ライブラリのバージョンに合わせた変更箇所
+    """
+    client = chromadb.PersistentClient(path="./chroma_db")  # 保存先パス（適宜変更）
+    db = Chroma.from_documents(
+        documents=docs,
+        embedding=embeddings,
+        client=client,
+        collection_name="products"
+    )
+    """
+    変更箇所終わり
+    """
 
     bm25_retriever = BM25Retriever.from_texts(
         docs_all,
