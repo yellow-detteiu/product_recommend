@@ -17,6 +17,7 @@ chroma-hnswlib==0.7.6 # コメントアウトする場合：chromadb を 0.5 系
 chromadb==0.6.3
 #chromadb==0.5.23 # 0.6.3でエラーが発生するため、0.5.23にダウングレード
 #chromadb==0.4.24 # 0.6.3でエラーが発生するため、0.4.24にダウングレード
+langchain_chroma==0.3.0 # chromadb 0.6 系に対応したバージョン。修正後のコードで必要
 click==8.1.8
 colorama==0.4.6
 coloredlogs==15.0.1
