@@ -122,7 +122,7 @@ def initialize_retriever():
     """
     client = chromadb.PersistentClient(path="./chroma_db")  # 保存先パス（適宜変更）
 
-    # tenantを手動作成（これが「手順」です）
+    # tenantを手動作成
     client.create_tenant("default_tenant")
     client.create_database("default_database")
 
