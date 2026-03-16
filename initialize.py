@@ -18,6 +18,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 
 import chromadb
+from chromadb.config import DEFAULT_TENANT, DEFAULT_DATABASE, Settings # 追加
 from langchain_chroma import Chroma   # ← 変更
 
 from langchain_community.retrievers import BM25Retriever
@@ -120,7 +121,12 @@ def initialize_retriever():
     """
     ライブラリのバージョンに合わせた変更箇所
     """
-    client = chromadb.PersistentClient(path="./chroma_db")  # 保存先パス（適宜変更）
+    #client = chromadb.PersistentClient(path="./chroma_db")  # 保存先パス（適宜変更）
+    client = chromadb.EphemeralClient(
+    settings=Settings(),
+    tenant=DEFAULT_TENANT,
+    database=DEFAULT_DATABASE,
+)
 
     # tenantを手動作成
     client.create_tenant("default_tenant")
