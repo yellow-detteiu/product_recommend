@@ -58,7 +58,8 @@ jsonschema-specifications==2024.10.1
 kubernetes==32.0.0
 langchain==0.3.17
 langchain-community==0.3.16
-langchain-core==0.3.33
+#langchain-core==0.3.33
+langchain-core>=1.0.0,<2.0.0 # langchain-chroma1.0.0以上の場合
 langchain-openai==0.3.3
 langchain-text-splitters==0.3.5
 langsmith==0.3.3
